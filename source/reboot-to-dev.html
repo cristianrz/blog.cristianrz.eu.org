@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Reboot-to-dev - cristianrz's website</title>
+</head>
+
+<body>
+  <h1>cristianrz's website</h1>
+  <centre><a href="../index.html">Home</a></centre>
+  <h2>reboot-to-dev</h2>
+  <p>This repository contains three files: <code>reboot-to-dev-mode</code>, <code>reboot-to-user-mode</code>, and
+    <code>issue.dev</code>.
+  </p>
+  <h3 id="usage">Usage</h3>
+  <p>The scripts <code>reboot-to-dev-mode</code> and <code>reboot-to-user-mode</code> are used to switch the system
+    between development mode and user mode. They should be run as <code>root</code>, and will prompt the user for
+    confirmation before making any changes.</p>
+  <p><code>issue.dev</code> is a warning message displayed to the user when the system is in development mode. It is
+    copied to <code>/etc/issue</code> when the system is switched to development mode, and is removed when the system is
+    switched back to user mode.</p>
+  <h3 id="installation">Installation</h3>
+  <p>To install these scripts, run <code>make install</code>. By default, they will be installed in
+    <code>/usr/local/bin</code> and <code>/etc</code>, but you can customize the installation directory by setting the
+    <code>PREFIX</code> and <code>DESTDIR</code> variables. For example, to install the scripts in
+    <code>/opt/devmode/bin</code>, run:
+  </p>
+  <code>make install PREFIX=/opt/devmode</code>
+  <p>To uninstall the scripts, run <code>make uninstall</code>.</p>
+
+  <p><a href="../downloads/devmode-230313.tgz">Source</a></p>
+  <br>
+  <hr>
+
+  <footer>
+    <p>
+      Copyright © 2023 cristianrz
+      Verbatim copying and redistribution of this entire page are
+      permitted provided this notice is preserved.
+    </p>
+  </footer>
+</body>
+
+</html>
