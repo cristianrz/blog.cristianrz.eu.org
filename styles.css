@@ -1,0 +1,21 @@
+body {
+	max-width: 750px;
+	margin: auto;
+	font-size: 1.1rem;
+	margin-top: 5%;
+	margin-bottom: 10%;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.date {
+	font-style: italic;
+	color:gray;	
+}
+
+
+footer {
+	border-top: 1px solid;
+	padding-top: 8px;
+	margin-top: 5%;
+	font-size: 0.9rem;
+}
