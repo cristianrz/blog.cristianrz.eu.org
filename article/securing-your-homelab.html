@@ -8,7 +8,9 @@
 </head>
 
 <body>
-    <h1>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</h1>
+    <h1>cristianrz's blog</h1>
+    <centre><a href="../index.html">Home</a></centre>
+    <h2>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</h2>
     <p class="date">13 Mar 2023</p>
     <p>Trying to set up my homelab and have it be reachable from the internet I had serious problems getting to where I
         wanted to be, although I never expected it was going to be that difficult.</p>
@@ -31,7 +33,7 @@
         because I already have a Netflix account, I don&#39;t need access to my media server when I&#39;m travelling.
         The main
         reason I have a homelab is LARPing, learning about security and having fun with it.</p>
-    <h2 id="self-hosted-vpn">Self-hosted VPN</h2>
+    <h3 id="self-hosted-vpn">Self-hosted VPN</h3>
     <p>I considered self hosting a VPN, mainly wireguard as it is quite simple and it is difficult to mess up. I could
         either host the server (as in, the device listening on the internet) at home or on a VPS.</p>
     <p>If were to host it at home (here is where the disclaimer becomes important), a carefully crafted packet sent to
@@ -45,12 +47,12 @@
         they listen in port 3675 when Oracle can connect to them.</p>
     <p>Also even with very carefully chosen VPS locations I found that the latency for things like video streaming makes
         it unusable.</p>
-    <h2 id="tailscalezerotier">Tailscale/Zerotier</h2>
+    <h3 id="tailscalezerotier">Tailscale/Zerotier</h3>
     <p>Tailscale and Zerotier work very nicely except for the part that you&#39;re completely trusting Tailscale and
         Zerotier servers. Their servers being compromised would mean that they can now see all of my services. Both of
         them offer you to self host the server but as far as I know Tailscale self hosted won&#39;t work on phones and
         Zerotier self hosted still talks to Zerotier servers.</p>
-    <h2 id="nebula">Nebula</h2>
+    <h3 id="nebula">Nebula</h3>
     <p>Nebula sounds very good as it&#39;s basically the same as Tailscale/Zerotier but hosting your on server. The main
         complaints I found with this are:</p>
     <ul>
@@ -73,13 +75,13 @@
         Nebula server can&#39;t impersonate a client and bypass any firewall rules. If you are familiar with
         Nebula&#39;s code
         I&#39;d love some input on this.</p>
-    <h2 id="ssh-tunnels">SSH tunnels</h2>
+    <h3 id="ssh-tunnels">SSH tunnels</h3>
     <p>Similar problem to setting my own VPN, either I expose my home network to compromise or I give access to a VPS
         provider to see all of my open services.</p>
     <p>Equally, this is TCP over TCP, not great for speed.</p>
-    <h2 id="cloudflare">Cloudflare</h2>
+    <h3 id="cloudflare">Cloudflare</h3>
     <p>I refuse to send my traffic in plain HTTP to a Cloudflare server.</p>
-    <h2 id="the-problems-with-the-web">The problems with the web</h2>
+    <h3 id="the-problems-with-the-web">The problems with the web</h3>
     <p>In addition to that I have a problem with how the web works today: you don&#39;t trust the website you&#39;re
         visiting,
         you trust certificate authorities.</p>
@@ -100,7 +102,7 @@
         can point you to their server and issue a TLS certificate for themselves. Same with your ISP. Not safe.</p>
     <p>Equally, I want to post a website on the internet so that Alice can see it, why do I need to ask for permission
         to this safely? But that gets a bit for into the philosophical territory.</p>
-    <h2 id="my-dream-scenario">My dream scenario</h2>
+    <h3 id="my-dream-scenario">My dream scenario</h3>
     <ul>
         <li>When Bob opens his website he decides that Carol will be her introduction point and shares his public key
             with Carol. He doesn&#39;t need to open any port to the internet but he sets up a permanent connection with
@@ -137,7 +139,7 @@
         that
         Carol is responsible for security doesn&#39;t mean that Carol has the capabiliy to impersonate Bob. Worth noting
         that I don&#39;t expect Carol to be Carol but rather Carol Inc or Carol.org.</p>
-    <h2 id="tor">Tor</h2>
+    <h3 id="tor">Tor</h3>
     <p>If you are familiar with Tor you probably realised by now that in the section above I&#39;ve described a
         badly-explained over-simplified version of how Tor works for private onion sites. For the ones that don&#39;t
         know,
@@ -156,11 +158,11 @@
     </ul>
     <p>Tor sets up the ground for my ideal web, but the focus on anonimity make it very difficult to use for other
         purposes.</p>
-    <h2 id="what-i-am-currenly-using">What I am currenly using</h2>
+    <h3 id="what-i-am-currenly-using">What I am currenly using</h3>
     <p>Even after all that I ended up settling for a Wireguard server hosted on the cloud. Being realistic, that is way
         more than enough security for hosting a few movies and a bunch of documents but again, the whole point was about
         LARPing about three letter agencies trying to access my data.</p>
-    <h2 id="other-thoughts">Other thoughts</h2>
+    <h3 id="other-thoughts">Other thoughts</h3>
     <p>If there was a way to communicate directly between two wireguard peers without any of them opening ports with the
         help of a public server then you could even communicate using HTTP. Alice is connecting Bob with Bob&#39;s
         public
@@ -171,7 +173,7 @@
     <p>I haven&#39;t even considered things like port-knocking because in the end that&#39;s a daemon running with the
         privilege
         to alter your firewall rules that I personally trust even less than Wireguard.</p>
-    <h2 id="conclusion">Conclusion</h2>
+    <h3 id="conclusion">Conclusion</h3>
     <p>The current web has taught us that we need to trust companies and if companies say it&#39;s fine, then you can
         sleep
         at night. In my ideal web you trust who you want to talk to and the middle men help establish the connection. No
@@ -186,7 +188,7 @@
         be great.</p>
     <p>PS: If there is a specific protocol/setup that solves all my problems I would love to hear about it!</p>
 
-    <centre><a href="/index.html">Back to home</a></centre>
+    <centre><a href="../index.html">Back to home</a></centre>
 
     <footer>
         <p>
