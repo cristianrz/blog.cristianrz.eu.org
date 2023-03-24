@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>OTGuard - cristianrz's website</title>
+</head>
+
+<body>
+    <h1>cristianrz's website</h1>
+    <centre><a href="../index.html">Home</a></centre>
+
+    <h2>OTGuard</h2>
+    <p>OTGuard is a tool for providing two-factor authentication with zero configuration on services that have
+        single-factor authentication and do not integrate with any 2FA solution. It is not meant to be used in isolation
+        but is intended to be part of a defense in depth strategy where applications listening on the ports have their
+        own authentication. OTGuard aims to provide a small attack surface with only ~ 300 lines of code and uses
+        privilege separation.</p>
+    <p>One of the key benefits of OTGuard is that it is the only solution that works with applications that expect
+        direct access to services, such as Jellyfin and Nextcloud. While it is not a replacement for Identity Aware
+        Proxies or SSO, it aims to provide 2FA with zero configuration on services.</p>
+    <p>OTGuard is the second factor in 2FA, and it is expected that services provide the first factor with usernames and
+        passwords. The tool uses OTP codes, which makes it less vulnerable to replay attacks. All firewall rules are
+        reset daily to provide some security against compromised devices. Users will need to authenticate every day, and
+        this reduces the amount of code and the attack surface even further.</p>
+    <p>The workflow for OTGuard is simple. Users try to access a service, and if it does not work, they log in on
+        OTGuard. Once authenticated, users will have access to the desired service. The tool does not check whether the
+        user is already allowed or use cookies as it seems like unnecessary complexity.</p>
+    <p>OTGuard is inspired by solutions like port knocking or Fwknop but unlike port knocking, passwords are not sent in
+        the clear, and unlike Fwknop, it provides OTP codes so that passwords cannot be reused.</p>
+    <h3 id="disclaimer">Disclaimer</h3>
+    <p>OTGuard is currently on alpha. Take your time to understand its intended use and do not use it on production
+        systems for now unless you are keen to go through all the code and ensure it meets your security requirements.
+    </p>
+    <h3 id="install">Install</h3>
+    <p>To install: download and extract the tarball. Then run the install command which will guide you through the
+        installation.</p>
+    <pre><code>$ wget https://github.com/cristianrz/otguard/releases/download/230324/otguard-230324.tgz
+$ tar xzvf otguard-*.tgz
+# ./install</code></pre>
+    <p>The install process will create a certificate and a TOTP secret for you.</p>
+    <h3 id="usage">Usage</h3>
+    <ul>
+        <li>
+            <p>First, store your TOTP secret in your preferred TOTP generator (I recommend KeePassXC)</p>
+        </li>
+        <li>
+            <p>Enable the OTGuard service</p>
+        </li>
+    </ul>
+    <pre><code># systemctl enable --now otguard</code></pre>
+    <ul>
+        <li>
+            <p>Ensure first that your site is inaccessible from the internet.</p>
+        </li>
+        <li>
+            <p>If you go on <code>https://your.website</code> you shouldn’t see anything.</p>
+        </li>
+        <li>
+            <p>Ensure you have firewall rules to allow traffic on port 8443 (by default) for OTGuard, for example</p>
+        </li>
+    </ul>
+    <pre><code># iptables -I INPUT -p tcp -m tcp --dport 8443 -j ACCEPT </code></pre>
+    <ul>
+        <li>Now head onto <code>https://your.website:8443</code>:</li>
+    </ul>
+    <center>
+        <img src="https://github.com/cristianrz/otguard/raw/main/img/login_screen.png" width="300">
+    </center>
+    <ul>
+        <li>Try to put a random user and code:</li>
+    </ul>
+    <center>
+        <img src="https://github.com/cristianrz/otguard/raw/main/img/wrong_login.png" width="300">
+    </center>
+    <ul>
+        <li>Put the correct TOTP:</li>
+    </ul>
+    <center>
+        <img src="https://github.com/cristianrz/otguard/raw/main/img/success.png" width="300">
+    </center>
+    <ul>
+        <li>
+            <p>Now if you go back to <code>https://your.website</code> you should have access to it.</p>
+        </li>
+        <li>
+            <p>If you check <code>iptables</code> you can see what rules OTGuard created:</p>
+        </li>
+    </ul>
+    <pre><code># iptables -S | grep otguard
+-A INPUT -s 10.10.10.1/32 -p tcp -m tcp --dport 80 -m comment --comment otguard -j ACCEPT
+-A INPUT -s 10.10.10.1/32 -p tcp -m tcp --dport 443 -m comment --comment otguard -j ACCEPT</code></pre>
+    <ul>
+        <li>Rules are purged daily. A cron file is installed in <code>/etc/cron.d</code> that does it. Feel free to
+            amend as necessary. Rules can also be purged manually with</li>
+    </ul>
+    <pre><code># /usr/local/otguard/bin/otguard-purgerules</code></pre>
+    <ul>
+        <li>If you check again there should be no otguard rules:</li>
+    </ul>
+    <pre><code># iptables -S | grep otguard</code></pre>
+    <h2 id="configuration">Configuration</h2>
+    <p>The default install uses a self-signed certificate and a randomly generated secret.</p>
+    <p>To install a new certificate you can replace <code>key.pem</code> and <code>cert.pem</code> in
+        <code>/etc/otguard</code>.</p>
+    <p>To add, remove or change users you can edit <code>/etc/otguard/secrets</code>. Each user should be a new line in
+        the form of <code>&lt;username&gt;:&lt;secret&gt;</code>.</p>
+    <p><a href="https://github.com/cristianrz/otguard/archive/refs/tags/230324.zip">Source</a></p>
+    <br>
+    <hr>
+
+    <footer>
+        <p>
+            Copyright © 2023 cristianrz
+            Verbatim copying and redistribution of this entire page are
+            permitted provided this notice is preserved.
+        </p>
+    </footer>
+</body>
+
+</html>
