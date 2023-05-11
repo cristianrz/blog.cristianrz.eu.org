@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+# regenerate.sh
+# =============
+# 
+# Replaces all pages headers and footers by header.html and footer.html.
+# It will also set the page title by replacing %a%b%c in the header.html with
+# whatever is in <h2> (there should only be one). It will then create a  .bak
+# file and replace the html for the new one.
+#
 
 set -eu
 
