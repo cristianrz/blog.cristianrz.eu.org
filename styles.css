@@ -1,0 +1,33 @@
+body {
+	max-width: 700px;
+	margin: 0 auto;
+	/* Optional: Center the content horizontally */
+	font-family: source-serif-pro, Georgia, Cambria, "Times New Roman", Times, serif;
+	color: rgb(41, 41, 41);
+}
+
+h1 {
+	font-size: 23px;
+	font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h2 {
+	font-size: 27.6px;
+	font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h3 {
+	font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 23px;
+}
+
+h4 {
+	font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 19.2px;
+}
+
+p,
+li {
+	font-size: 16px;
+	line-height: 24px;
+}

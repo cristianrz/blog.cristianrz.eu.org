@@ -61,7 +61,9 @@ new() {
 <!-- END MAIN CONTENT -->/
 EOF
 
-	_log_info "Created $file, remember to run $0 regenerate before publishing"
+	_log_info "Created $file, remember to:"
+	_log_info "- run \`$0 regenerate\` before publishing"
+	_log_info "- add the page to index.html"
 
 }
 
