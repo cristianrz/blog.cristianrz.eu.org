@@ -28,7 +28,7 @@ regenerate() {
 	find index.html page/ article/ -type f -name "*.html" | while read -r file; do
 		_log_info "Generating $file"
 		_log_info "- Grabbing title"
-		title="$(awk '/h2/ { gsub(/.*<h2>/,""); gsub(/<\/h2>/,""); print  }' "$file")"
+		title="$(awk '/<h2>/ { gsub(/.*\<h2\>/,""); gsub(/\<\/h2\>/,""); print  }' "$file")"
 
 		_log_info "- Adding headers"
 		{
