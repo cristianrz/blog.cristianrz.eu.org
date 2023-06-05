@@ -1,195 +1,290 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust - cristianrz's website</title>
-    <link rel="stylesheet" href="../styles.css">
-    <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-top: 0;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 24px;
+    }
+
+    h3 {
+      font-size: 18px;
+      margin-top: 16px;
+    }
+
+    p {
+      margin-bottom: 16px;
+    }
+
+    ul {
+      margin-bottom: 16px;
+      padding-left: 20px;
+    }
+
+    a {
+      color: #337ab7;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 24px 0;
+    }
+  </style>
+  <meta charset="UTF-8">
+  <title>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust - cristianrz's website</title>
+  <!-- <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="styles.css"> -->
 </head>
 
 <body>
+  <div class="container">
     <h1>cristianrz's website</h1>
     <p><a href="../index.html">Home</a></p>
     <hr>
-    <!-- BEGIN MAIN CONTENT -->
-    <h2>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</h2>
-    <p><em>13 Mar 2023</em></p>
-    <p>Trying to set up my homelab and have it be reachable from the internet I had serious problems getting to where I
-        wanted to be, although I never expected it was going to be that difficult.</p>
-    <p>Being very pro-privacy pro-security my goals where:</p>
-    <ul>
-        <li>Access my services from anywhere, including my phone</li>
-        <li>Create trust between server and client that doesn&#39;t involve 3rd parties, ideally trust on first use.
-            Assume
-            all middle-men are compromised.</li>
-        <li>Have end to end encrypted connections.</li>
-        <li>Clients can only talk to services once I know they are clients who I trust.</li>
-        <li>Have a usable latency/bandwidth.</li>
-        <li>Setup once/work forever. The kind of thing I would install on my mom&#39;s devices so she can use my
-            Nextcloud
-            instance forever.</li>
-        <li>Assume services security is flawed and they need a gatekeeper.</li>
-    </ul>
-    <p>Now, the options I considered and why I don&#39;t think any of them are viable.</p>
-    <p>DISCLAIMER: A lot of the security below will sound like LARPing, fearmongering and paranoid and the reason is
-        because I already have a Netflix account, I don&#39;t need access to my media server when I&#39;m travelling.
-        The main
-        reason I have a homelab is LARPing, learning about security and having fun with it.</p>
-    <h3 id="self-hosted-vpn">Self-hosted VPN</h3>
-    <p>I considered self hosting a VPN, mainly wireguard as it is quite simple and it is difficult to mess up. I could
-        either host the server (as in, the device listening on the internet) at home or on a VPS.</p>
-    <p>If were to host it at home (here is where the disclaimer becomes important), a carefully crafted packet sent to
-        my VPN by anyone in the world could technically compromise my server so that is discarded.</p>
-    <p>Hosting the &#34;VPN server&#34; on the cloud is another option however I am basically opening all of my services
-        to the
-        VPS provider. I have tried to &#34;protect&#34; my services with things like TLS client certificates however
-        things that
-        use apps like Nextcloud or Jellyfin don&#39;t work with these and solutions that can tunnel the traffic are too
-        complex for my mom. I do not really trust the developers of most of my services to know what they are doing when
-        they listen in port 3675 when Oracle can connect to them.</p>
-    <p>Also even with very carefully chosen VPS locations I found that the latency for things like video streaming makes
-        it unusable.</p>
-    <h3 id="tailscalezerotier">Tailscale/Zerotier</h3>
-    <p>Tailscale and Zerotier work very nicely except for the part that you&#39;re completely trusting Tailscale and
-        Zerotier servers. Their servers being compromised would mean that they can now see all of my services. Both of
-        them offer you to self host the server but as far as I know Tailscale self hosted won&#39;t work on phones and
-        Zerotier self hosted still talks to Zerotier servers.</p>
-    <h3 id="nebula">Nebula</h3>
-    <p>Nebula sounds very good as it&#39;s basically the same as Tailscale/Zerotier but hosting your on server. The main
-        complaints I found with this are:</p>
-    <ul>
-        <li>You issue certificates for hosts and there isn&#39;t any centralised revocation lists. Revoking a
-            compromised
-            client means going to all of your devices and adding a blacklist rule.</li>
-        <li>Phone app doesn&#39;t allow setting a custom DNS. If I set the DNS server on my settings means when I
-            disconnect
-            from the network I need to change it again.</li>
-        <li>If I host Nebula at home, I&#39;m opening a port to my server, if I host it on the cloud, now the cloud
-            provider
-            can see my flawed services. I can&#39;t see a setup where I can restrict my server to only talk to specific
-            clients but not the server. In any scenario the server can say, &#34;I&#39;m Alice now!&#34; and get what
-            they want.
-        </li>
-    </ul>
-    <p>NOTE: I am not familiar of the intricacies of how Nebula works. I am aware that Nebula implements a sort of
-        firewall where you can decide what hosts you want to talk to and which ones to block but I don&#39;t trust that
-        a
-        Nebula server can&#39;t impersonate a client and bypass any firewall rules. If you are familiar with
-        Nebula&#39;s code
-        I&#39;d love some input on this.</p>
-    <h3 id="ssh-tunnels">SSH tunnels</h3>
-    <p>Similar problem to setting my own VPN, either I expose my home network to compromise or I give access to a VPS
-        provider to see all of my open services.</p>
-    <p>Equally, this is TCP over TCP, not great for speed.</p>
-    <h3 id="cloudflare">Cloudflare</h3>
-    <p>I refuse to send my traffic in plain HTTP to a Cloudflare server.</p>
-    <h3 id="the-problems-with-the-web">The problems with the web</h3>
-    <p>In addition to that I have a problem with how the web works today: you don&#39;t trust the website you&#39;re
-        visiting,
-        you trust certificate authorities.</p>
-    <p>In a usual scenario where Alice wants to access Bob&#39;s website:</p>
-    <ul>
-        <li>Bob creates his website and puts it on a server</li>
-        <li>Bob needs to ask a 3rd party to provide him with a domain name</li>
-        <li>Bob needs to ask a 3rd party to provide him with a TLS certificate</li>
-        <li>Alice then asks a DNS provider: where is bob.com? And shes gets an IP address.</li>
-        <li>Alice then has a list of certificate authorities that she is supposed to trust and she asks them
-            &#34;Bob&#39;s
-            server has given me this response, can I trust that it&#39;s Bob?&#34; and then she gets the website.</li>
-    </ul>
-    <p>In this scenario, a compromised DNS server can provide a wrong response. Usually you would say, that&#39;s OK
-        because
-        then the malicious server won&#39;t have a proper TLS certificate. But if, let&#39;s say, Namecheap is
-        compromised, they
-        can point you to their server and issue a TLS certificate for themselves. Same with your ISP. Not safe.</p>
-    <p>Equally, I want to post a website on the internet so that Alice can see it, why do I need to ask for permission
-        to this safely? But that gets a bit for into the philosophical territory.</p>
-    <h3 id="my-dream-scenario">My dream scenario</h3>
-    <ul>
-        <li>When Bob opens his website he decides that Carol will be her introduction point and shares his public key
-            with Carol. He doesn&#39;t need to open any port to the internet but he sets up a permanent connection with
-            Carol.</li>
-        <li>Alice then wants to access bob.com and she knows that bob.com can be found on Carol&#39;s directory (or
-            access
-            Dave&#39;s public directory that just has Carol&#39;s IP)</li>
-        <li>Alice asks Carol if they know how to find bob.com. Carol asks for proof that they know Bob, Alice provides
-            Bob&#39;s public key.</li>
-        <li>Carol checks that Bob&#39;s public key matches and sets up a connection between Alice and Bob via something
-            like
-            UDP hole punching.</li>
-        <li>Now that Alice and Bob are connected and Alice has Bob&#39;s public key they have a secure point to point
-            channel.</li>
-    </ul>
-    <p>In this situation even if Carol is compromised and redirects Alice to malicious host, that malicious host
-        won&#39;t
-        be able to establish a channel with Alice without having Bob&#39;s private key.</p>
-    <p>In the current web, trusting a specific certificate and alerting if it changes wouldn&#39;t work, as the same
-        companies that issue your certificate can generate new ones for that domain.</p>
-    <p>Using your own CA also won&#39;t work. If your ISP has the capability of generating TLS certificates they could
-        point
-        you to the wrong address and generate a nice certificate for the wrong bob.com since you are already most likely
-        trusting their certificates by default.</p>
-    <p>Maybe one option would be to have a browser that only trusts your own certificate to access that specific
-        website, but what do you do if there are 3 more websites that you need to visit? Or a browser that associates
-        CA&#39;s with website, e.g. for Bob&#39;s website you only trust Bob&#39;s CA, etc. I don&#39;t see any problems
-        with this
-        except for not having the knowledge to do it myself.</p>
-    <p>Overall, the idea is that I want to trust endpoints, not any of the middlemen. And that, regardless of what
-        middle men do, ultimately I want to see that the end server is who they think they are. I temporarily trust
-        Carol but only up until the point that I can verify myself that Bob is actually Bob.</p>
-    <p>At the same time, Bob doesn&#39;t need to care about security as much because Carol will, but equally the fact
-        that
-        Carol is responsible for security doesn&#39;t mean that Carol has the capabiliy to impersonate Bob. Worth noting
-        that I don&#39;t expect Carol to be Carol but rather Carol Inc or Carol.org.</p>
-    <h3 id="tor">Tor</h3>
-    <p>If you are familiar with Tor you probably realised by now that in the section above I&#39;ve described a
-        badly-explained over-simplified version of how Tor works for private onion sites. For the ones that don&#39;t
-        know,
-        Tor does basically that: servers trust a middle man but ultimately you use the server&#39;s public key to
-        communicate with them and you trust a single public key per site.</p>
-    <p>The main problem with Tor for this use case is that it&#39;s not made for this, it&#39;s made for anonimity.
-        While it is
-        true that you can do your normal browsing with Tor there are a few problems:</p>
-    <ul>
-        <li>Anonimity requires that traffic is relayed through multiple servers, this makes everything very slow. There
-            is a way to single-hop however it is not advised. I wish you could safely setup an end to end connection as
-            a last step.</li>
-        <li>Because of the anonimity, it is unusable for normal browsing mainly because of the amount of websites that
-            will block Tor exit nodes, the amount of captchas you will find (looking at you Google) and how slow it is.
-        </li>
-    </ul>
-    <p>Tor sets up the ground for my ideal web, but the focus on anonimity make it very difficult to use for other
-        purposes.</p>
-    <h3 id="what-i-am-currenly-using">What I am currenly using</h3>
-    <p>Even after all that I ended up settling for a Wireguard server hosted on the cloud. Being realistic, that is way
-        more than enough security for hosting a few movies and a bunch of documents but again, the whole point was about
-        LARPing about three letter agencies trying to access my data.</p>
-    <h3 id="other-thoughts">Other thoughts</h3>
-    <p>If there was a way to communicate directly between two wireguard peers without any of them opening ports with the
-        help of a public server then you could even communicate using HTTP. Alice is connecting Bob with Bob&#39;s
-        public
-        Wireguard key and you can even send your traffic over HTTP knowing that the connection is end to end encrypted
-        and they are who they say they are because you know Bob&#39;s public key. You wouldn&#39;t get the peace of mind
-        of
-        having a lock icon on the browser but that could be implemented.</p>
-    <p>I haven&#39;t even considered things like port-knocking because in the end that&#39;s a daemon running with the
-        privilege
-        to alter your firewall rules that I personally trust even less than Wireguard.</p>
-    <h3 id="conclusion">Conclusion</h3>
-    <p>The current web has taught us that we need to trust companies and if companies say it&#39;s fine, then you can
-        sleep
-        at night. In my ideal web you trust who you want to talk to and the middle men help establish the connection. No
-        one apart from the destination site has any authority over whether that site can be trusted or not.</p>
-    <p>Equally most applications want to authenticate themselves. They try really hard to make it securely but being
-        realistic, we all know that applications are bound to eventually have newly discovered huge security holes,
-        whereas software made specifically for security with a small attack surface should be a first door to unlock
-        before actually being able to talk to the service daemon (i.e. I don&#39;t want to rely on Apache to protect
-        Nextcloud data hosted on Apache)</p>
-    <p>If you trust Wireguard to be impenetrable, Wireguard is probably the solution with the best latency being able to
-        even communicate with plain HTTP. However if you want to be as paranoid as me, another layer of protection would
-        be great.</p>
-    <p>PS: If there is a specific protocol/setup that solves all my problems I would love to hear about it!</p>
+    <!-- BEGIN MAIN CONTENT -->        <h2>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</h2>
+        <p><em>13 Mar 2023</em></p>
+        <p>Trying to set up my homelab and have it be reachable from the internet I had serious problems getting to
+            where I
+            wanted to be, although I never expected it was going to be that difficult.</p>
+        <p>Being very pro-privacy pro-security my goals where:</p>
+        <ul>
+            <li>Access my services from anywhere, including my phone</li>
+            <li>Create trust between server and client that doesn&#39;t involve 3rd parties, ideally trust on first use.
+                Assume
+                all middle-men are compromised.</li>
+            <li>Have end to end encrypted connections.</li>
+            <li>Clients can only talk to services once I know they are clients who I trust.</li>
+            <li>Have a usable latency/bandwidth.</li>
+            <li>Setup once/work forever. The kind of thing I would install on my mom&#39;s devices so she can use my
+                Nextcloud
+                instance forever.</li>
+            <li>Assume services security is flawed and they need a gatekeeper.</li>
+        </ul>
+        <p>Now, the options I considered and why I don&#39;t think any of them are viable.</p>
+        <p>DISCLAIMER: A lot of the security below will sound like LARPing, fearmongering and paranoid and the reason is
+            because I already have a Netflix account, I don&#39;t need access to my media server when I&#39;m
+            travelling.
+            The main
+            reason I have a homelab is LARPing, learning about security and having fun with it.</p>
+        <h3 id="self-hosted-vpn">Self-hosted VPN</h3>
+        <p>I considered self hosting a VPN, mainly wireguard as it is quite simple and it is difficult to mess up. I
+            could
+            either host the server (as in, the device listening on the internet) at home or on a VPS.</p>
+        <p>If were to host it at home (here is where the disclaimer becomes important), a carefully crafted packet sent
+            to
+            my VPN by anyone in the world could technically compromise my server so that is discarded.</p>
+        <p>Hosting the &#34;VPN server&#34; on the cloud is another option however I am basically opening all of my
+            services
+            to the
+            VPS provider. I have tried to &#34;protect&#34; my services with things like TLS client certificates however
+            things that
+            use apps like Nextcloud or Jellyfin don&#39;t work with these and solutions that can tunnel the traffic are
+            too
+            complex for my mom. I do not really trust the developers of most of my services to know what they are doing
+            when
+            they listen in port 3675 when Oracle can connect to them.</p>
+        <p>Also even with very carefully chosen VPS locations I found that the latency for things like video streaming
+            makes
+            it unusable.</p>
+        <h3 id="tailscalezerotier">Tailscale/Zerotier</h3>
+        <p>Tailscale and Zerotier work very nicely except for the part that you&#39;re completely trusting Tailscale and
+            Zerotier servers. Their servers being compromised would mean that they can now see all of my services. Both
+            of
+            them offer you to self host the server but as far as I know Tailscale self hosted won&#39;t work on phones
+            and
+            Zerotier self hosted still talks to Zerotier servers.</p>
+        <h3 id="nebula">Nebula</h3>
+        <p>Nebula sounds very good as it&#39;s basically the same as Tailscale/Zerotier but hosting your on server. The
+            main
+            complaints I found with this are:</p>
+        <ul>
+            <li>You issue certificates for hosts and there isn&#39;t any centralised revocation lists. Revoking a
+                compromised
+                client means going to all of your devices and adding a blacklist rule.</li>
+            <li>Phone app doesn&#39;t allow setting a custom DNS. If I set the DNS server on my settings means when I
+                disconnect
+                from the network I need to change it again.</li>
+            <li>If I host Nebula at home, I&#39;m opening a port to my server, if I host it on the cloud, now the cloud
+                provider
+                can see my flawed services. I can&#39;t see a setup where I can restrict my server to only talk to
+                specific
+                clients but not the server. In any scenario the server can say, &#34;I&#39;m Alice now!&#34; and get
+                what
+                they want.
+            </li>
+        </ul>
+        <p>NOTE: I am not familiar of the intricacies of how Nebula works. I am aware that Nebula implements a sort of
+            firewall where you can decide what hosts you want to talk to and which ones to block but I don&#39;t trust
+            that
+            a
+            Nebula server can&#39;t impersonate a client and bypass any firewall rules. If you are familiar with
+            Nebula&#39;s code
+            I&#39;d love some input on this.</p>
+        <h3 id="ssh-tunnels">SSH tunnels</h3>
+        <p>Similar problem to setting my own VPN, either I expose my home network to compromise or I give access to a
+            VPS
+            provider to see all of my open services.</p>
+        <p>Equally, this is TCP over TCP, not great for speed.</p>
+        <h3 id="cloudflare">Cloudflare</h3>
+        <p>I refuse to send my traffic in plain HTTP to a Cloudflare server.</p>
+        <h3 id="the-problems-with-the-web">The problems with the web</h3>
+        <p>In addition to that I have a problem with how the web works today: you don&#39;t trust the website you&#39;re
+            visiting,
+            you trust certificate authorities.</p>
+        <p>In a usual scenario where Alice wants to access Bob&#39;s website:</p>
+        <ul>
+            <li>Bob creates his website and puts it on a server</li>
+            <li>Bob needs to ask a 3rd party to provide him with a domain name</li>
+            <li>Bob needs to ask a 3rd party to provide him with a TLS certificate</li>
+            <li>Alice then asks a DNS provider: where is bob.com? And shes gets an IP address.</li>
+            <li>Alice then has a list of certificate authorities that she is supposed to trust and she asks them
+                &#34;Bob&#39;s
+                server has given me this response, can I trust that it&#39;s Bob?&#34; and then she gets the website.
+            </li>
+        </ul>
+        <p>In this scenario, a compromised DNS server can provide a wrong response. Usually you would say, that&#39;s OK
+            because
+            then the malicious server won&#39;t have a proper TLS certificate. But if, let&#39;s say, Namecheap is
+            compromised, they
+            can point you to their server and issue a TLS certificate for themselves. Same with your ISP. Not safe.</p>
+        <p>Equally, I want to post a website on the internet so that Alice can see it, why do I need to ask for
+            permission
+            to this safely? But that gets a bit for into the philosophical territory.</p>
+        <h3 id="my-dream-scenario">My dream scenario</h3>
+        <ul>
+            <li>When Bob opens his website he decides that Carol will be her introduction point and shares his public
+                key
+                with Carol. He doesn&#39;t need to open any port to the internet but he sets up a permanent connection
+                with
+                Carol.</li>
+            <li>Alice then wants to access bob.com and she knows that bob.com can be found on Carol&#39;s directory (or
+                access
+                Dave&#39;s public directory that just has Carol&#39;s IP)</li>
+            <li>Alice asks Carol if they know how to find bob.com. Carol asks for proof that they know Bob, Alice
+                provides
+                Bob&#39;s public key.</li>
+            <li>Carol checks that Bob&#39;s public key matches and sets up a connection between Alice and Bob via
+                something
+                like
+                UDP hole punching.</li>
+            <li>Now that Alice and Bob are connected and Alice has Bob&#39;s public key they have a secure point to
+                point
+                channel.</li>
+        </ul>
+        <p>In this situation even if Carol is compromised and redirects Alice to malicious host, that malicious host
+            won&#39;t
+            be able to establish a channel with Alice without having Bob&#39;s private key.</p>
+        <p>In the current web, trusting a specific certificate and alerting if it changes wouldn&#39;t work, as the same
+            companies that issue your certificate can generate new ones for that domain.</p>
+        <p>Using your own CA also won&#39;t work. If your ISP has the capability of generating TLS certificates they
+            could
+            point
+            you to the wrong address and generate a nice certificate for the wrong bob.com since you are already most
+            likely
+            trusting their certificates by default.</p>
+        <p>Maybe one option would be to have a browser that only trusts your own certificate to access that specific
+            website, but what do you do if there are 3 more websites that you need to visit? Or a browser that
+            associates
+            CA&#39;s with website, e.g. for Bob&#39;s website you only trust Bob&#39;s CA, etc. I don&#39;t see any
+            problems
+            with this
+            except for not having the knowledge to do it myself.</p>
+        <p>Overall, the idea is that I want to trust endpoints, not any of the middlemen. And that, regardless of what
+            middle men do, ultimately I want to see that the end server is who they think they are. I temporarily trust
+            Carol but only up until the point that I can verify myself that Bob is actually Bob.</p>
+        <p>At the same time, Bob doesn&#39;t need to care about security as much because Carol will, but equally the
+            fact
+            that
+            Carol is responsible for security doesn&#39;t mean that Carol has the capabiliy to impersonate Bob. Worth
+            noting
+            that I don&#39;t expect Carol to be Carol but rather Carol Inc or Carol.org.</p>
+        <h3 id="tor">Tor</h3>
+        <p>If you are familiar with Tor you probably realised by now that in the section above I&#39;ve described a
+            badly-explained over-simplified version of how Tor works for private onion sites. For the ones that
+            don&#39;t
+            know,
+            Tor does basically that: servers trust a middle man but ultimately you use the server&#39;s public key to
+            communicate with them and you trust a single public key per site.</p>
+        <p>The main problem with Tor for this use case is that it&#39;s not made for this, it&#39;s made for anonimity.
+            While it is
+            true that you can do your normal browsing with Tor there are a few problems:</p>
+        <ul>
+            <li>Anonimity requires that traffic is relayed through multiple servers, this makes everything very slow.
+                There
+                is a way to single-hop however it is not advised. I wish you could safely setup an end to end connection
+                as
+                a last step.</li>
+            <li>Because of the anonimity, it is unusable for normal browsing mainly because of the amount of websites
+                that
+                will block Tor exit nodes, the amount of captchas you will find (looking at you Google) and how slow it
+                is.
+            </li>
+        </ul>
+        <p>Tor sets up the ground for my ideal web, but the focus on anonimity make it very difficult to use for other
+            purposes.</p>
+        <h3 id="what-i-am-currenly-using">What I am currenly using</h3>
+        <p>Even after all that I ended up settling for a Wireguard server hosted on the cloud. Being realistic, that is
+            way
+            more than enough security for hosting a few movies and a bunch of documents but again, the whole point was
+            about
+            LARPing about three letter agencies trying to access my data.</p>
+        <h3 id="other-thoughts">Other thoughts</h3>
+        <p>If there was a way to communicate directly between two wireguard peers without any of them opening ports with
+            the
+            help of a public server then you could even communicate using HTTP. Alice is connecting Bob with Bob&#39;s
+            public
+            Wireguard key and you can even send your traffic over HTTP knowing that the connection is end to end
+            encrypted
+            and they are who they say they are because you know Bob&#39;s public key. You wouldn&#39;t get the peace of
+            mind
+            of
+            having a lock icon on the browser but that could be implemented.</p>
+        <p>I haven&#39;t even considered things like port-knocking because in the end that&#39;s a daemon running with
+            the
+            privilege
+            to alter your firewall rules that I personally trust even less than Wireguard.</p>
+        <h3 id="conclusion">Conclusion</h3>
+        <p>The current web has taught us that we need to trust companies and if companies say it&#39;s fine, then you
+            can
+            sleep
+            at night. In my ideal web you trust who you want to talk to and the middle men help establish the
+            connection. No
+            one apart from the destination site has any authority over whether that site can be trusted or not.</p>
+        <p>Equally most applications want to authenticate themselves. They try really hard to make it securely but being
+            realistic, we all know that applications are bound to eventually have newly discovered huge security holes,
+            whereas software made specifically for security with a small attack surface should be a first door to unlock
+            before actually being able to talk to the service daemon (i.e. I don&#39;t want to rely on Apache to protect
+            Nextcloud data hosted on Apache)</p>
+        <p>If you trust Wireguard to be impenetrable, Wireguard is probably the solution with the best latency being
+            able to
+            even communicate with plain HTTP. However if you want to be as paranoid as me, another layer of protection
+            would
+            be great.</p>
+        <p>PS: If there is a specific protocol/setup that solves all my problems I would love to hear about it!</p>
     <!-- END MAIN CONTENT -->
     <br>
     <p><a href="../index.html">Back to home</a></p>
@@ -202,6 +297,7 @@
         </p>
         <br>
     </footer>
+  </div>
 </body>
 
 </html>
