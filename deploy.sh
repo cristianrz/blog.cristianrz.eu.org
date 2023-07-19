@@ -8,4 +8,4 @@ rm "$DEST"/*
 
 cp -v ./*.html  ./*.xml "$DEST"
 
-chmod -v 0640 "$DEST"/*
+chmod 0640 "$DEST"/*
