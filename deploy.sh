@@ -4,7 +4,7 @@ set -eu
 
 DEST="${HOME}/public_html"
 
-rm "$DEST"/*
+rm -r "$DEST"/*
 
 for i in . article page; do
 	mkdir -p "${DEST}/${i}"
