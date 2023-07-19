@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -eux
+set -eu
 
 DEST="${HOME}/public_html"
 
@@ -15,4 +15,6 @@ done
 
 find "$DEST" -type f -exec chmod 0640 {} + 
 find "$DEST" -type d -exec chmod 0750 {} + 
+
+printf '[*] Deployed successfully\n'
 
