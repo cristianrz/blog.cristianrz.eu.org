@@ -33,12 +33,14 @@ build() {
 		_log_info "- Adding headers"
 		{
 			sed "s/%a%b%c/$title/g" header.html
+			printf '\n'
 			awk '
 				BEGIN { content = 0; }
 				/<!-- BEGIN MAIN CONTENT -->/ { content=1; next; }
 				/<!-- END MAIN CONTENT -->/ { content=0; next; }
 				content == 1 { print; }
 			' "$file"
+			printf '\n'
 			cat footer.html
 		} >"$file.new"
 
