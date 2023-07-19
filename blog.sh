@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# regenerate.sh
+# build.sh
 # =============
 #
 # Replaces all pages headers and footers by header.html and footer.html.
@@ -24,7 +24,7 @@ _log_fatal() {
 	exit 1
 }
 
-regenerate() {
+build() {
 	find index.html page/ article/ -type f -name "*.html" | while read -r file; do
 		_log_info "Generating $file"
 		_log_info "- Grabbing title"
@@ -34,10 +34,10 @@ regenerate() {
 		{
 			sed "s/%a%b%c/$title/g" header.html
 			awk '
-			BEGIN { content = 0; }
-			/<!-- BEGIN MAIN CONTENT -->/ { content=1; next; }
-			/<!-- END MAIN CONTENT -->/ { content=0; next; }
-			content == 1 { print; }
+				BEGIN { content = 0; }
+				/<!-- BEGIN MAIN CONTENT -->/ { content=1; next; }
+				/<!-- END MAIN CONTENT -->/ { content=0; next; }
+				content == 1 { print; }
 			' "$file"
 			cat footer.html
 		} >"$file.new"
@@ -62,7 +62,7 @@ new() {
 EOF
 
 	_log_info "Created $file, remember to:"
-	_log_info "- run \`$0 regenerate\` before publishing"
+	_log_info "- run \`$0 build\` before publishing"
 	_log_info "- add the page to index.html"
 
 }
@@ -72,7 +72,7 @@ usage() {
 Usage: $0 <command> [options]
 
 Commands:
-  regenerate                 Regenerate the blog's static pages
+  build                 Regenerate the blog's static pages
   new <category> <pagename>  Create a new item with the specified name in the
     specified category
 
@@ -91,12 +91,12 @@ cmd="$1"
 shift
 
 case "$cmd" in
-regenerate)
+build)
 	if [ "$#" -ne 0 ]; then
 		usage
 		exit 1
 	fi
-	regenerate "$@"
+	build "$@"
 	;;
 new)
 	if [ "$#" -ne 2 ]; then
