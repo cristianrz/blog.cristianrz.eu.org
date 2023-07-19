@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# build.sh
+# blog.sh
 # =============
 #
 # Replaces all pages headers and footers by header.html and footer.html.
@@ -28,7 +28,9 @@ build() {
 	find index.html page/ article/ -type f -name "*.html" | while read -r file; do
 		_log_info "Generating $file"
 		_log_info "- Grabbing title"
-		title="$(awk '/<h2>/ { gsub(/.*\<h2\>/,""); gsub(/\<\/h2\>/,""); print  }' "$file")"
+		#title="$(awk '/<h2>/ { gsub(/.*\<h2\>/,""); gsub(/\<\/h2\>/,""); print }' "$file")"
+		title="$(awk '/<h2>/ { gsub(/.*<h2>/, ""); gsub(/<\/.*/, "");  print  }' "$file")"
+
 
 		_log_info "- Adding headers"
 		{
