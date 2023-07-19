@@ -10,7 +10,7 @@ for i in . article page; do
 	mkdir -p "${DEST}/${i}"
 
 	cp -v ./"$i"/*.html "${DEST}/${i}"
-	cp -v ./"$i"*.xml "${DEST}/${i}"
+	cp -v ./"$i"/*.xml "${DEST}/${i}"
 done
 
 find "$DEST" -type f -exec chmod 0640 {} +
