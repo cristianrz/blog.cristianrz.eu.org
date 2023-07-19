@@ -4,6 +4,8 @@ set -eu
 
 DEST="${HOME}/public_html"
 
+git reset HEAD --hard
+
 rm -r "$DEST"/*
 
 for i in . article page; do
