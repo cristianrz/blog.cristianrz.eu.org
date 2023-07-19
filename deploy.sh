@@ -15,8 +15,8 @@ for i in . article page; do
 	cp ./"$i"/*.xml "${DEST}/${i}" ||  true
 done
 
-find "$DEST"/ -type f -exec chmod 0640 {} + 
-find "$DEST"/ -type d -exec chmod 0750 {} + 
+find "$DEST"/ -type f -exec chmod 0644 {} + 
+find "$DEST"/ -type d -exec chmod 0755 {} + 
 
 printf '[*] Deployed successfully\n'
 
