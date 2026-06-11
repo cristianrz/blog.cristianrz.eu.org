@@ -1,42 +1,32 @@
 baseURL = "https://blog.cristianrz.eu.org/"
-title = "cristianrz's website"
+title = "cristianrz"
 theme = "hugo-paper"
-copyright = "Copyright © 2026 cristianrz. Verbatim copying and redistribution of this entire page are permitted provided this notice is preserved."
-
+copyright = "© 2026 cristianrz"
 languageCode = "en"
 defaultContentLanguage = "en"
 enableRobotsTXT = true
+enableInlineShortcodes = true
 
-[markup.highlight]
-codeFences = true
-noClasses = false
+[pagination]
+  pagerSize = 5
 
 [markup.goldmark.renderer]
-unsafe = true
+  unsafe = true
+
+[markup.highlight]
+  codeFences = true
+  noClasses = false
 
 [params]
-style = "auto"
-dateFormat = "02 Jan 2006"
-readingTime = false
-slogan = ""
-color = 'linen'
+  color = 'gray'
+  dateFormat = "02 Jan 2006"
+  readingTime = true
+  name = 'cristianrz'
+  github = 'cristianrz'
 
-[params.syntax]
-use = "none"
-theme = "github"
-darkTheme = "dracula"
-
-[params.comments]
-enable = false
-
-[params.share]
-enable = false
-
-[params.nav]
-showCategories = false
-showTags = false
-
-[[params.nav.custom]]
-title = "Cool services"
-url = "/pages/cool-services/"
-
+[menu]
+  [[menu.main]]
+    identifier = "cool-services"
+    name = "Cool services"
+    url = "/pages/cool-services/"
+    weight = 10
