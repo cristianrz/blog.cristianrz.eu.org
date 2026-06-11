@@ -1,0 +1,41 @@
+baseURL = "https://blog.cristianrz.eu.org/"
+title = "cristianrz's website"
+theme = "hugo-paper"
+copyright = "Copyright © 2026 cristianrz. Verbatim copying and redistribution of this entire page are permitted provided this notice is preserved."
+
+languageCode = "en"
+defaultContentLanguage = "en"
+enableRobotsTXT = true
+
+[markup.highlight]
+codeFences = true
+noClasses = false
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[params]
+style = "auto"
+dateFormat = "02 Jan 2006"
+readingTime = false
+slogan = ""
+
+[params.syntax]
+use = "none"
+theme = "github"
+darkTheme = "dracula"
+
+[params.comments]
+enable = false
+
+[params.share]
+enable = false
+
+[params.nav]
+showCategories = false
+showTags = false
+
+[[params.nav.custom]]
+title = "Cool services"
+url = "/pages/cool-services/"
+

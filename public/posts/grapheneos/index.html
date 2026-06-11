@@ -1,0 +1,176 @@
+<!doctype html>
+
+
+
+
+
+
+
+<html
+  class="not-ready lg:text-base"
+  style="--bg:#faf8f1"
+  lang="en"
+  dir="ltr"
+><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no"
+  />
+
+  
+  <title>An Analysis of GrapheneOS&#39;s Server Infrastructure - cristianrz&#39;s website</title>
+
+  
+  <meta name="theme-color" />
+
+  <meta name="description" content="I was poking around the GrapheneOS infrastructure repo last week, just curious how they build things. First thing I noticed: every single server runs Arch Linux. DNS nodes, mail servers, the lot. You can verify it directly — every package list includes pacman-contrib and pacutils, which are Arch-specific and don&rsquo;t exist on any other distro. The deploy-initial-vps script checks for the Arch ISO before doing anything else: ssh $remote &#39;[[ $(grep IMAGE_ID /etc/os-release) = &quot;IMAGE_ID=archlinux&quot; ]]&#39;." />
+  <meta name="author" content="cristianrz&#39;s website" /><link rel="preload stylesheet" as="style" href="http://localhost:1313/main.min.55f67b3b9482b33ca2648823a61f5e76f43181837316a5e844e85db17499eb47.css" integrity="sha256-VfZ7O5SCszyiZIgjph9edvQxgYNzFqXoROhdsXSZ60c=" />
+
+  
+  <link rel="preload" as="image" href="http://localhost:1313/theme.png" />
+
+  
+
+  
+
+  <script
+    defer
+    src="http://localhost:1313/highlight.min.js"
+    onload="hljs.initHighlightingOnLoad()"
+  ></script>
+
+  
+  <link
+    rel="icon"
+    href="http://localhost:1313/favicon.ico"
+  />
+  <link
+    rel="apple-touch-icon"
+    href="http://localhost:1313/apple-touch-icon.png"
+  />
+
+  <meta name="generator" content="Hugo 0.123.7">
+</head>
+<body
+    class="bg-(--bg) text-black antialiased duration-200 ease-out [-webkit-tap-highlight-color:transparent] dark:text-white"
+  ><header
+  class="mx-auto flex h-[4.5rem] max-w-(--w) px-8 whitespace-nowrap lg:justify-center"
+>
+  <div class="relative z-50 flex items-center ltr:mr-auto rtl:ml-auto">
+    <a
+      class="-translate-y-[1px] text-2xl font-medium"
+      href="http://localhost:1313/"
+      >cristianrz&#39;s website</a
+    >
+    <div
+      class="btn-dark text-[0px] ltr:ml-4 rtl:mr-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.png)_left_center/_auto_theme('spacing.6')_no-repeat] [transition:_background-position_0.4s_steps(5)] dark:[background-position:right]"
+      role="button"
+      aria-label="Dark"
+    ></div>
+  </div>
+
+  <div
+    class="btn-menu relative z-50 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden ltr:-mr-8 rtl:-ml-8"
+    role="button"
+    aria-label="Menu"
+  ></div>
+
+  <script>
+    
+    const htmlClass = document.documentElement.classList;
+    setTimeout(() => {
+      htmlClass.remove('not-ready');
+    }, 10);
+
+    
+    const btnMenu = document.querySelector('.btn-menu');
+    btnMenu.addEventListener('click', () => {
+      htmlClass.toggle('open');
+    });
+
+    
+    const metaTheme = document.querySelector('meta[name="theme-color"]');
+    const lightBg = '#faf8f1'.replace(/"/g, '');
+    const setDark = (isDark) => {
+      metaTheme.setAttribute('content', isDark ? "rgb(0 0 0 / 85%)" : lightBg);
+      htmlClass[isDark ? 'add' : 'remove']('dark');
+      localStorage.setItem('dark', isDark);
+    };
+
+    
+    const darkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    if (htmlClass.contains('dark')) {
+      setDark(true);
+    } else {
+      const darkVal = localStorage.getItem('dark');
+      setDark(darkVal ? darkVal === 'true' : darkScheme.matches);
+    }
+
+    
+    darkScheme.addEventListener('change', (event) => {
+      setDark(event.matches);
+    });
+
+    
+    const btnDark = document.querySelector('.btn-dark');
+    btnDark.addEventListener('click', () => {
+      setDark(localStorage.getItem('dark') !== 'true');
+    });
+  </script>
+
+  <div
+    class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full flex-col justify-center bg-(--bg) pb-16 duration-200 select-none lg:static lg:h-auto lg:flex-row lg:bg-transparent! lg:pb-0 lg:transition-none"
+  >
+  </div>
+</header>
+<main
+      class="prose prose-neutral dark:prose-invert relative mx-auto min-h-[calc(100vh-9rem)] max-w-(--w) px-8 pt-14 pb-16"
+    ><article>
+  <header class="mb-14">
+    <h1 class="my-0! pb-2.5">An Analysis of GrapheneOS&#39;s Server Infrastructure</h1><div class="text-xs antialiased opacity-60"><time>May 31, 2026</time></div></header>
+
+  <section><p>I was poking around the <a href="https://github.com/GrapheneOS/infrastructure">GrapheneOS infrastructure repo</a> last week, just curious how they build things. First thing I noticed: every single server runs Arch Linux. DNS nodes, mail servers, the lot. You can verify it directly — every package list includes <code>pacman-contrib</code> and <code>pacutils</code>, which are Arch-specific and don&rsquo;t exist on any other distro. The <a href="https://github.com/GrapheneOS/infrastructure/blob/main/deploy-initial-vps"><code>deploy-initial-vps</code> script</a> checks for the Arch ISO before doing anything else: <code>ssh $remote '[[ $(grep IMAGE_ID /etc/os-release) = &quot;IMAGE_ID=archlinux&quot; ]]'</code>. Arch on a server is unusual. I kept reading.</p>
+<p>Arch is rolling-release — updates arrive continuously rather than in tested batches. To be fair, they do pin the LTS kernel on every machine, which is the slower-moving stable kernel. But the rest of the userspace rolls forward with no immutability and no verified boot. That&rsquo;s the opposite of how they approach the phone OS.</p>
+<p>The DNS nodes compound this. A DNS server has one job. GrapheneOS&rsquo;s <a href="https://github.com/GrapheneOS/infrastructure/tree/main/packages">DNS node package list</a> has 42 entries — Neovim, Fish shell, htop, mtr, nmap, strace, iperf, the full package manager. The phone OS strips everything unnecessary to reduce attack surface. The servers install the full toolkit everywhere because it&rsquo;s convenient. Those are contradictory positions.</p>
+<p>The containers aren&rsquo;t really containers either. The DNS secondary nodes and mail server run inside what are described as isolated environments, but they&rsquo;re bootstrapped with <code>pacstrap</code> — the same tool used to install Arch from scratch onto bare metal. Complete Arch install inside, package manager included. The <a href="https://github.com/GrapheneOS/infrastructure/blob/main/hosts.sh">hosts that run containers</a> have <code>arch-install-scripts</code> installed, and nowhere else does. The only difference from a standalone server is no kernel and no bootloader. That&rsquo;s not what most people mean by container isolation.</p>
+<p>Then I found this in <a href="https://github.com/GrapheneOS/infrastructure/blob/main/etc/unbound/unbound.conf"><code>etc/unbound/unbound.conf</code></a>:</p>
+<pre tabindex="0"><code>forward-zone:
+    name: &#34;.&#34;
+    forward-tls-upstream: yes
+    forward-addr: 1.1.1.1@853#cloudflare-dns.com
+    forward-addr: 1.0.0.1@853#cloudflare-dns.com
+</code></pre><p>GrapheneOS runs <a href="https://grapheneos.org/articles/grapheneos-servers">over 40 DNS servers across 16 locations</a> with anycast routing and custom geographic load balancing. The implicit reason for building that is independence — no third party seeing your query patterns or manipulating responses. Then every one of those servers forwards its own DNS queries to Cloudflare. Cloudflare sees what domains every GrapheneOS server looks up, when, and how often. There&rsquo;s no explanation for this anywhere in their public documentation.</p>
+<p>The jurisdiction situation is similarly awkward. GrapheneOS <a href="https://www.datacenterdynamics.com/en/news/grapheneos-migrates-workloads-off-of-ovh-cites-issues-with-frances-digital-privacy-policy/">left OVH late last year</a> citing France&rsquo;s support for Chat Control — proposed EU legislation requiring scanning of private messages. The framing was principled: France isn&rsquo;t safe for a privacy project. The forum, Matrix server, Mastodon instance, and attestation service <a href="https://grapheneos.org/articles/grapheneos-servers">moved to netcup servers in Manassas, Virginia</a>. Netcup is a German company, but these are US machines. US jurisdiction means National Security Letters — which can demand data and forbid disclosure — FISA courts, and a surveillance apparatus that&rsquo;s by most measures more expansive than what they objected to in France. Maybe it was a pragmatic necessity of moving quickly. But it wasn&rsquo;t mentioned in the announcement.</p>
+<p>On governance: GrapheneOS was founded by Daniel Micay (<code>thestinger</code>). In 2026, after a period of public conflict — including <a href="https://privatephoneshop.com/why-we-no-longer-sell-phones-with-grapheneos/">accusing Louis Rossmann of being &ldquo;complicit in attempted murder&rdquo;</a> for leaving a YouTube comment — he announced he was stepping down as lead developer and Foundation director. <a href="https://factually.co/fact-checks/technology/who-runs-grapheneos-after-daniel-micay-14e426">Canadian federal corporate records still listed him as a director as of late 2025</a>, two and a half years later. The <a href="https://github.com/GrapheneOS/infrastructure/blob/main/.github/FUNDING.yml">FUNDING.yml</a> lists his personal GitHub account as the sole funding recipient. His dotfiles are throughout the server configs — his Neovim theme, shell preferences, keybindings. The production mail server has <code>mutt</code> and <code>s-nail</code> installed. You install those when you personally read mail directly on the server.</p>
+<p><a href="https://en.wikipedia.org/wiki/GrapheneOS">GrapheneOS reports around 400,000 active users</a>. One person&rsquo;s personal setup serves all of them.</p>
+<p>When Micay stepped down he said signing infrastructure would be <a href="https://lemmy.ca/post/568614">&ldquo;replicated in multiple locations and verified against each other&rdquo;</a>. The update signing keys live on air-gapped machines — good practice — but controlled by the same person whose dotfiles are on the servers, whose GitHub is the funding recipient, who is still listed as a director. There&rsquo;s no public evidence the replication happened. The repo still looks like one person&rsquo;s deployment scripts.</p>
+<p>The OS itself is fine regardless of all this — verified boot means existing installations can&rsquo;t be silently compromised even if every server were taken over. But shipping new security patches depends on infrastructure and keys that appear to live with one person. If Micay walked away, got hit by a bus, or got served an NSL, the community infrastructure has no visible succession plan.</p>
+<p>I still use GrapheneOS. <a href="https://discuss.techlore.tech/t/claims-made-by-forensics-companies-their-capabilities-and-how-grapheneos-fares/8653">Cellebrite lists it as one of the few Android devices it can&rsquo;t extract data from</a> — that&rsquo;s real. The kernel hardening, the memory allocator, the sandboxing all work. None of what&rsquo;s above changes that.</p>
+<p>But there&rsquo;s a sharp gap between how adversarially they think about the phone OS and how they&rsquo;ve built everything around it. On the phone: minimal surface, assume everything is hostile, strip everything unnecessary. On the servers: one person&rsquo;s preferred tools, full installs everywhere, Cloudflare forwarding on infrastructure built to avoid Cloudflare. It reads like someone very good at mobile security built the supporting systems himself without applying the same rigour to the scaffolding.</p>
+</section>
+
+  <nav
+    class="mt-24 flex overflow-hidden rounded-xl bg-black/[3%] text-lg leading-[1.2]! *:flex *:w-1/2 *:items-center *:p-5 *:font-medium *:no-underline dark:bg-white/[8%] [&>*:hover]:bg-black/[2%] dark:[&>*:hover]:bg-white/[3%]"
+  ><a
+      class="justify-end pl-3 ltr:ml-auto rtl:mr-auto"
+      href="http://localhost:1313/posts/securing-your-homelab/"
+      ><span>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</span><span class="ltr:ml-1.5 rtl:mr-1.5">→</span></a
+    ></nav></article></main><footer
+  class="mx-auto flex h-[4.5rem] max-w-(--w) items-center px-8 text-xs tracking-wider uppercase opacity-60"
+>
+  <div class="mr-auto">Copyright © 2026 cristianrz. Verbatim copying and redistribution of this entire page are permitted provided this notice is preserved.</div>
+  <a class="link mx-6" href="https://gohugo.io/" rel="noopener" target="_blank"
+    >powered by hugo️️</a
+  >️
+  <a
+    class="link"
+    href="https://github.com/nanxiaobei/hugo-paper"
+    rel="noopener"
+    target="_blank"
+    >hugo-paper</a
+  >
+</footer>
+</body>
+</html>

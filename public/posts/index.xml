@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Posts on cristianrz&#39;s website</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on cristianrz&#39;s website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>Copyright © 2026 cristianrz. Verbatim copying and redistribution of this entire page are permitted provided this notice is preserved.</copyright>
+    <lastBuildDate>Sun, 31 May 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An Analysis of GrapheneOS&#39;s Server Infrastructure</title>
+      <link>http://localhost:1313/posts/grapheneos/</link>
+      <pubDate>Sun, 31 May 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/grapheneos/</guid>
+      <description>I was poking around the GrapheneOS infrastructure repo last week, just curious how they build things. First thing I noticed: every single server runs Arch Linux. DNS nodes, mail servers, the lot. You can verify it directly — every package list includes pacman-contrib and pacutils, which are Arch-specific and don&amp;rsquo;t exist on any other distro. The deploy-initial-vps script checks for the Arch ISO before doing anything else: ssh $remote &#39;[[ $(grep IMAGE_ID /etc/os-release) = &amp;quot;IMAGE_ID=archlinux&amp;quot; ]]&#39;.</description>
+    </item>
+    <item>
+      <title>Securing Your Homelab: Navigating the Complexities of Remote Access and Trust</title>
+      <link>http://localhost:1313/posts/securing-your-homelab/</link>
+      <pubDate>Mon, 13 Mar 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/securing-your-homelab/</guid>
+      <description>Trying to set up my homelab and have it be reachable from the internet I had serious problems getting to where I wanted to be, although I never expected it was going to be that difficult.&#xA;Being very pro-privacy pro-security my goals where:&#xA;Access my services from anywhere, including my phone Create trust between server and client that doesn&amp;rsquo;t involve 3rd parties, ideally trust on first use. Assume all middle-men are compromised.</description>
+    </item>
+  </channel>
+</rss>
