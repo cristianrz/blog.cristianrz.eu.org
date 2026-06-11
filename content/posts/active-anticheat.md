@@ -1,10 +1,8 @@
 +++
-title = 'Active Anticheat'
+title = 'Reverse Engineering the Anticheat on a Private MMO Server'
 date = 2026-06-11T10:24:39+01:00
 draft = false
 +++
-
-# What does the anticheat on my private MMO server actually do?
 
 I play on a private Aion server. For those unfamiliar, Aion is an MMO from 2009 that NCSoft has largely abandoned in the West, but a community of private servers keeps it alive. The server I play on uses a third-party anticheat called [Active Anticheat](https://active-ac.com), a commercial product sold to private server operators by a developer in Warsaw.
 
