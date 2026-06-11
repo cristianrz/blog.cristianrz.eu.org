@@ -1,3 +1,4 @@
 *.bak
 Makefile
 push.sh
+public/
