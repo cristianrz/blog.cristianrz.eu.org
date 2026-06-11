@@ -1,5 +1,5 @@
 +++
-title = 'The Reboot Problem: Why Most Operating Systems Can't Defend Against a Compromised Root'
+title = 'The Reboot Problem: Why Most Operating Systems Can\'t Defend Against a Compromised Root'
 date = 2026-05-22T11:36:38+01:00
 draft = false
 +++
